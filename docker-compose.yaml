@@ -1,0 +1,30 @@
+version: "3.7"
+services:
+  postgres:
+    image: postgres:alpine3.20
+    container_name: music-library-postgres
+    restart: on-failure
+    environment:
+      POSTGRES_DB: "music-library"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"
+      PGDATA: "/pgdata"
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    container_name: music_library
+    restart: on-failure
+    depends_on: 
+      - postgres
+    environment:
+      APP_IP: "0.0.0.0"
+      APP_PORT: "8080"
+      POSTGRES_HOST: "postgres"
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: "music-library"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"
+    ports:
+      - "8080:8080"
