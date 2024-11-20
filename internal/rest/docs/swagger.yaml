@@ -1,0 +1,259 @@
+basePath: /api/v1
+definitions:
+  models.Song:
+    description: Song model
+    properties:
+      createdAt:
+        description: Created date of the song
+        type: string
+      group:
+        description: Group name
+        type: string
+      id:
+        description: ID of the song
+        type: integer
+      link:
+        description: Link to the song
+        type: string
+      releaseDate:
+        description: Release date of the song
+        type: string
+      song:
+        description: Song title
+        type: string
+      text:
+        description: Song text
+        type: string
+      updatedAt:
+        description: Updated date of the song
+        type: string
+    type: object
+  models.SongDetail:
+    description: SongDetail model
+    properties:
+      link:
+        description: Text of the song
+        type: string
+      releaseDate:
+        description: Link to the song
+        type: string
+      text:
+        description: Release date of the song
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Swagger API for Golang Online Song Library
+  title: Online Song Library API
+  version: "1.0"
+paths:
+  /api/v1/create:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new song with the provided details.
+      operationId: create-song
+      parameters:
+      - description: The song details to be created
+        in: body
+        name: Song
+        required: true
+        schema:
+          $ref: '#/definitions/models.Song'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The song was created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request or bad request to API
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Create a new song.
+  /api/v1/delete/{id}:
+    delete:
+      description: Deletes a song by its ID.
+      operationId: delete-song
+      parameters:
+      - description: The ID of the song to be deleted
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The song was deleted successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid ID
+          schema:
+            type: string
+        "404":
+          description: Song not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Delete a song by its ID.
+  /api/v1/get:
+    get:
+      description: Retrieves a list of songs with optional filtering and pagination.
+      operationId: get-songs
+      parameters:
+      - description: Filter by group name
+        in: query
+        name: group
+        type: string
+      - description: Filter by song name
+        in: query
+        name: song
+        type: string
+      - default: 10
+        description: Limit the number of results
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A map containing the list of songs
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get a list of songs
+  /api/v1/get-info:
+    get:
+      description: Retrieves additional information about a song from an external
+        API based on the group and song title.
+      operationId: get-info
+      parameters:
+      - description: The name of the group.
+        in: query
+        name: group
+        required: true
+        type: string
+      - description: The title of the song.
+        in: query
+        name: song
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The detailed information about the song.
+          schema:
+            $ref: '#/definitions/models.SongDetail'
+        "400":
+          description: Invalid request or bad request to API.
+          schema:
+            type: string
+        "500":
+          description: Internal server error.
+          schema:
+            type: string
+      summary: Get additional information about a song from an external API.
+  /api/v1/get/{id}:
+    get:
+      description: Retrieves the text of a song by its ID with optional pagination.
+      operationId: get-song-text
+      parameters:
+      - description: The ID of the song
+        in: path
+        name: id
+        required: true
+        type: integer
+      - default: 10
+        description: Limit the number of lines
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The text of the song
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid ID
+          schema:
+            type: string
+        "404":
+          description: Song not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get the text of a song by its ID.
+  /api/v1/update/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Updates an existing song with the provided details.
+      operationId: update-song
+      parameters:
+      - description: The ID of the song to be updated
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: The updated song details
+        in: body
+        name: Song
+        required: true
+        schema:
+          $ref: '#/definitions/models.Song'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The song was updated successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request or bad request to API
+          schema:
+            type: string
+        "404":
+          description: Song not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Update an existing song by its ID.
+swagger: "2.0"
